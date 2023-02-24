@@ -1,0 +1,44 @@
+{
+  "Session": "https://pushbroom.co/vocabulary#Session",
+  "View": "https://pushbroom.co/vocabulary#View",
+  "Event": "https://pushbroom.co/vocabulary#Event",
+  "event": "https://pushbroom.co/vocabulary/customEvents#",
+  "id": "@id",
+  "type": "@type",
+  "browser": "https://pushbroom.co/vocabulary#browser",
+  "browserVersion": "https://pushbroom.co/vocabulary#browserVersion",
+  "os": "https://pushbroom.co/vocabulary#operatingSystem",
+  "from": "https://pushbroom.co/vocabulary#from",
+  "referrer": "https://pushbroom.co/vocabulary#referrer",
+  "url": "https://pushbroom.co/vocabulary#url",
+  "source": {
+    "@id": "https://pushbroom.co/vocabulary#source",
+    "@type": "@id"
+  },
+  "events": {
+    "@reverse": "https://pushbroom.co/vocabulary#source"
+  },
+  "viewed": {
+    "@id": "https://pushbroom.co/vocabulary#viewed",
+    "@type": "@id"
+  },
+  "width": {
+    "@id": "https://pushbroom.co/vocabulary#width",
+    "@type": "http://www.w3.org/2001/XMLSchema#integer"
+  },
+  "datetime": {
+    "@id": "https://pushbroom.co/vocabulary#datetime",
+    "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+  },
+  "timestamp": {
+    "@id": "https://pushbroom.co/vocabulary#timestamp",
+    "@type": "http://www.w3.org/2001/XMLSchema#integer"
+  },
+  "duration": {
+    "@id": "https://pushbroom.co/vocabulary#duration",
+    "@type": "http://www.w3.org/2001/XMLSchema#integer"
+  },
+  "inSession": {
+    "@id": "https://pushbroom.co/vocabulary#inSession"
+  }
+}
