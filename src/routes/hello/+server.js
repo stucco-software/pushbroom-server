@@ -1,4 +1,4 @@
-import { sparql_endpoint, subgraph } from '$env/static/private'
+import { subgraph } from '$env/static/private'
 import context from '$lib/context'
 import jsonld from "jsonld"
 import { insert } from "$lib/query"

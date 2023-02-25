@@ -1,53 +1,66 @@
+import { subgraph } from '$env/static/private'
 import useragent from "useragent"
 import { midnight, approachingMidnight } from '$lib/datetime'
 import { insert, queryBoolean } from "$lib/query"
 import context from '$lib/context'
 import jsonld from "jsonld"
 
-const createSession = async ({id, agent}) => {
+export const _createSession = async ({id, agent}) => {
   const date = new Date()
   const ld = {
-    '@id': id,
     '@context': context,
-    '@type': 'Session',
+    'id': id,
+    'type': 'Session',
     browser: agent.family,
     browserVersion: agent.toVersion(),
     os: agent.os.toString(),
     datetime: date.toISOString(),
-    timestamp: Date.now()
+    timestamp: date.getTime()
   }
-  const nquads = await jsonld.toRDF(ld, {format: 'application/n-quads'});
-  await insert(nquads)
+  return await jsonld.toRDF(ld, {format: 'application/n-quads'});
 }
 
-export async function GET({ request }) {
-  // get the id from the eTag header
-  let id = request.headers.get('if-none-match')
-
-  // if the eTag is older than midnight today,
-  // expire the session.
-  let sessionExpired = id
-    ? await queryBoolean(`
-      ASK {
-        GRAPH <${subgraph}> {
-          <${id}> pushbroom:timestamp ?t
-          FILTER(?t < ${midnight()} )
-        }
+export const _checkSessionID = async (id) => {
+  console.log('_checkSessionID')
+  console.log(id)
+  if (!id) {
+    return true
+  }
+  console.log('query the ol DB')
+  return await queryBoolean(`
+    ASK {
+      GRAPH <${subgraph}> {
+        <${id}> pushbroom:timestamp ?t
+        FILTER(?t < ${midnight()} )
       }
-    `)
-    : true
+    }
+  `)
+}
 
+export const _handler = async (id, request) => {
+  let triples
+  // get the id from the eTag header
+  let session = request.headers.get('if-none-match')
+  let agent = request.headers.get('user-agent')
+  let sessionExpired = await _checkSessionID(session)
 
-  // If there is no etag, or the session is expired,
-  // create a new session.
-  if (!id || sessionExpired) {
-    id = `urn:uuid:${crypto.randomUUID()}`,
-    await createSession({
+  console.log(sessionExpired)
+
+  if (sessionExpired) {
+    triples = await _createSession({
       id,
       agent: useragent.lookup(request.headers.get('user-agent'))
     })
   }
+  return triples
+}
 
+export async function GET({ request }) {
+  let id = `urn:uuid:${crypto.randomUUID()}`
+  let triples = _handler(id, request)
+  if (triples) {
+    await insert(triples)
+  }
   // Attach the new eTag to the response
   // Expire the header at midnight tonight.
   const response = new Response(id, {
