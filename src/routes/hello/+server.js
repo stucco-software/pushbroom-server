@@ -3,11 +3,9 @@ import context from '$lib/context'
 import jsonld from "jsonld"
 import { insert } from "$lib/query"
 
-export async function GET({ url }) {
+export async function _handler(view_id, url) {
   const date = new Date()
   const query = url.searchParams
-  const view_id = `urn:uuid:${crypto.randomUUID()}`
-
   // These two objects could be collapsed into a single
   // JSON-LD @graph array
   // Assemble view data
@@ -15,9 +13,9 @@ export async function GET({ url }) {
     '@context': context,
     type: 'View',
     id: view_id,
-    from: q.get('r'),
-    url: q.get('p'),
-    width: q.get('w'),
+    from: query.get('r'),
+    url: query.get('p'),
+    width: query.get('w'),
     datetime: date.toISOString(),
     timestamp: Date.now()
   }
@@ -28,17 +26,26 @@ export async function GET({ url }) {
   // assemble additional session data
   const session = {
     '@context': context,
-    id: `${q.get('u')}`,
+    id: `${query.get('u')}`,
     viewed: view_id
   }
   // convert to tripless
   const session_quads = await jsonld.toRDF(session, {format: 'application/n-quads'});
 
+  return `${view_quads} ${session_quads}`
+}
+
+export async function GET({ url }) {
+  // create uuid for view
+  const view_id = `urn:uuid:${crypto.randomUUID()}`
+  // convert get url to triples
+  let triples = await_handler(view_id, url)
   // insert triples to store
-  await insert(`${view_quads} ${session_quads}`)
-
+  await insert(triples)
+  // return view_id in response
   let response = new Response(view_id)
+  // allow CORS from domain origin
   response.headers.append('Access-Control-Allow-Origin', subgraph)
-
+  // return response
   return response
 }
