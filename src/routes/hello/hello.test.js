@@ -21,13 +21,13 @@ describe('view test', () => {
     let id = `urn:uuid:view`
     let url =  new URL(`https://pushbroom.dev/hello?r=https://pushbroom.dev&p=https://pushbroom.dev/resource&w=1200&u=urn:uuid:session`)
 
-    let target = `<urn:uuid:view> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://pushbroom.co/vocabulary#View> .
+    let target = `<urn:uuid:session> <https://pushbroom.co/vocabulary#viewed> <urn:uuid:view> .
+<urn:uuid:view> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://pushbroom.co/vocabulary#View> .
 <urn:uuid:view> <https://pushbroom.co/vocabulary#datetime> "${datetime}"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
 <urn:uuid:view> <https://pushbroom.co/vocabulary#from> "https://pushbroom.dev" .
 <urn:uuid:view> <https://pushbroom.co/vocabulary#timestamp> "${timestamp}"^^<http://www.w3.org/2001/XMLSchema#integer> .
 <urn:uuid:view> <https://pushbroom.co/vocabulary#url> "https://pushbroom.dev/resource" .
 <urn:uuid:view> <https://pushbroom.co/vocabulary#width> "1200"^^<http://www.w3.org/2001/XMLSchema#integer> .
- <urn:uuid:session> <https://pushbroom.co/vocabulary#viewed> <urn:uuid:view> .
 `
 
     let triples = await _handler(id, url)
