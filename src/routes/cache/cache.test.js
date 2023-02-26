@@ -1,5 +1,4 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { GET } from './+server.js'
 import { subgraph } from '$env/static/private'
 
 const uuid = 'session'
@@ -99,12 +98,18 @@ describe('Record sessions', () => {
 describe('Session GET request function', () => {
   beforeEach(() => {
     vi.stubGlobal('crypto', {randomUUID: () => uuid})
+    vi.resetModules()
+  })
+
+  afterEach(() => {
+    vi.resetModules()
   })
 
   it('accepts a request and returns a header with an eTag and cache expiry header', async () => {
     vi.doMock('../../lib/query.js', async (importOriginal) => {
       return {
         queryBoolean: () => false,
+        insert: () => true
       }
     })
 
@@ -114,12 +119,61 @@ describe('Session GET request function', () => {
         'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/111.0'
       })
     })
+    const { GET } = await import('./+server.js')
     let response = await GET({request})
     let headers = response.headers
     vi.doUnmock('../../lib/query.js')
 
     expect(headers.get('access-control-allow-origin')).toBe(subgraph)
     expect(headers.get('etag')).toBe(id)
-    expect(typeof headers.get('etag')).toBe('string')
+    expect(typeof headers.get('cache-control')).toBe('string')
+  })
+
+  it('returns the same id passed in the if-none-match header', async () => {
+    vi.doMock('../../lib/query.js', async (importOriginal) => {
+      return {
+        queryBoolean: () => false,
+        insert: () => true
+      }
+    })
+
+    let sessionid = 'urn:uuid:validsession'
+    let request = new Request(`https://pushbroom.dev/cache`, {
+      method: 'GET',
+      headers: new Headers({
+        'if-none-match': sessionid,
+        'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/111.0'
+      })
+    })
+    const { GET } = await import('./+server.js')
+    let response = await GET({request})
+    let headers = response.headers
+    vi.doUnmock('../../lib/query.js')
+
+    expect(headers.get('etag')).toBe(sessionid)
+  })
+
+  it('returns a new id passed an expired session in the if-none-match header', async () => {
+    vi.doMock('../../lib/query.js', async (importOriginal) => {
+      return {
+        queryBoolean: () => true,
+        insert: () => true
+      }
+    })
+
+    let sessionid = 'urn:uuid:validsession'
+    let request = new Request(`https://pushbroom.dev/cache`, {
+      method: 'GET',
+      headers: new Headers({
+        'if-none-match': sessionid,
+        'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/111.0'
+      })
+    })
+    const { GET } = await import('./+server.js')
+    let response = await GET({request})
+    let headers = response.headers
+    vi.doUnmock('../../lib/query.js')
+
+    expect(headers.get('etag')).toBe(id)
   })
 })

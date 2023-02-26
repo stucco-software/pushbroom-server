@@ -40,7 +40,6 @@ export const _handler = async (id, request) => {
   let session = request.headers.get('if-none-match')
   let agent = request.headers.get('user-agent')
   let sessionExpired = await _checkSessionID(session)
-
   if (sessionExpired) {
     triples = await _createSession({
       id,
@@ -53,7 +52,7 @@ export const _handler = async (id, request) => {
 export async function GET({ request }) {
   let id = `urn:uuid:${crypto.randomUUID()}`
   let session = request.headers.get('if-none-match')
-  let triples = _handler(id, request)
+  let triples = await _handler(id, request)
   if (triples) {
     await insert(triples)
     session = id
