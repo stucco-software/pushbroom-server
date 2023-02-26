@@ -1,6 +1,7 @@
 import context from '$lib/context'
 import jsonld from "jsonld"
 import { insert } from "$lib/query"
+import { subgraph } from '$env/static/private'
 
 export const _unpack = ({event, obj}) => {
   let keys = [...Object.keys(obj)]
@@ -54,12 +55,13 @@ export const _handler = async (event_id, data) => {
 
 export async function POST({ request }) {
   // get the ppost body
+  console.log(request)
   const data = await request.json()
+  console.log(data)
   // create uuid for event
   const event_id = `urn:uuid:${crypto.randomUUID()}`
   // convert get url to triples
-  let triples = await _handler(event_id, url)
-  console.log(triples)
+  let triples = await _handler(event_id, data)
   // insert triples to store
   await insert(triples)
   // return 200 in response

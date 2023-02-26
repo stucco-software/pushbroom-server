@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { subgraph } from '$env/static/private'
 
 const uuid = 'event'
 const id = `urn:uuid:${uuid}`
@@ -146,3 +147,38 @@ _:b0 <https://pushbroom.co/vocabulary/customEvents#string> "wow" .
     expect(triples).toBe(target);
   })
 })
+
+describe('Event POST response', () => {
+  beforeEach(() => {
+    vi.stubGlobal('crypto', {randomUUID: () => uuid})
+  })
+
+  it('Reponds to a request with a 200 and correct CORS headers', async () => {
+
+    vi.doMock('../../lib/query.js', async (importOriginal) => {
+      return {
+        insert: () => true
+      }
+    })
+
+    let request = {
+      json: () => {
+        return {
+          v: 'https://pushbroom.test',
+          e: 'neat event string'
+        }
+      }
+    }
+    const { POST } = await import('./+server.js')
+
+    let response = await POST({request})
+    let code = await response.text()
+
+    vi.doUnmock('../../lib/query.js')
+    expect(code).toBe('200')
+    expect(response.headers.get('access-control-allow-origin')).toBe(subgraph);
+  })
+})
+
+
+
