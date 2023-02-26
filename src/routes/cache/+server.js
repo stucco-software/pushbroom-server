@@ -21,12 +21,9 @@ export const _createSession = async ({id, agent}) => {
 }
 
 export const _checkSessionID = async (id) => {
-  console.log('_checkSessionID')
-  console.log(id)
   if (!id) {
     return true
   }
-  console.log('query the ol DB')
   return await queryBoolean(`
     ASK {
       GRAPH <${subgraph}> {
@@ -44,8 +41,6 @@ export const _handler = async (id, request) => {
   let agent = request.headers.get('user-agent')
   let sessionExpired = await _checkSessionID(session)
 
-  console.log(sessionExpired)
-
   if (sessionExpired) {
     triples = await _createSession({
       id,
@@ -57,16 +52,18 @@ export const _handler = async (id, request) => {
 
 export async function GET({ request }) {
   let id = `urn:uuid:${crypto.randomUUID()}`
+  let session = request.headers.get('if-none-match')
   let triples = _handler(id, request)
   if (triples) {
     await insert(triples)
+    session = id
   }
   // Attach the new eTag to the response
   // Expire the header at midnight tonight.
   const response = new Response(id, {
     headers: {
       "Cache-Control": `max-age=${approachingMidnight()}`,
-      "ETag": id
+      "ETag": session
     }
   })
   response.headers.append('Access-Control-Allow-Origin', subgraph)

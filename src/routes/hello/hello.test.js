@@ -1,9 +1,25 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { _handler } from './+server.js'
+import { _handler, GET } from './+server.js'
+import { subgraph } from '$env/static/private'
 
-describe('Record views', () => {
+const uuid = 'view'
+const id = `urn:uuid:${uuid}`
+const data = {
+  r: 'https://pushbroom.dev',
+  p: 'https://pushbroom.dev/resource',
+  w: '1200',
+  u: 'urn:uuid:session'
+}
+const url =  new URL(`https://pushbroom.dev/hello?r=${data.r}&p=${data.p}&w=${data.w}&u=${data.u}`)
+
+describe('View request object to RDF Triples handler', () => {
   beforeEach(() => {
     vi.useFakeTimers()
+    vi.mock('../../lib/query.js', async () => {
+      return {
+        insert: () => true,
+      }
+    })
   })
 
   afterEach(() => {
@@ -15,15 +31,6 @@ describe('Record views', () => {
     const datetime = date.toISOString()
     const timestamp = date.getTime()
     vi.setSystemTime(date)
-
-    let id = `urn:uuid:view`
-    let data = {
-      r: 'https://pushbroom.dev',
-      p: 'https://pushbroom.dev/resource',
-      w: '1200',
-      u: 'urn:uuid:session'
-    }
-    let url =  new URL(`https://pushbroom.dev/hello?r=${data.r}&p=${data.p}&w=${data.w}&u=${data.u}`)
 
     let target = `<urn:uuid:session> <https://pushbroom.co/vocabulary#viewed> <urn:uuid:view> .
 <urn:uuid:view> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://pushbroom.co/vocabulary#View> .
@@ -37,3 +44,17 @@ describe('Record views', () => {
     expect(triples).toBe(target);
   });
 });
+
+
+describe('View GET request function', () => {
+  beforeEach(() => {
+    vi.stubGlobal('crypto', {randomUUID: () => uuid})
+  })
+
+  it('accepts a URL and returns a view UUID', async () => {
+    let response = await GET({url})
+    let body = await response.text()
+    expect(body).toBe(id)
+    expect(response.headers.get('access-control-allow-origin')).toBe(subgraph)
+  })
+})

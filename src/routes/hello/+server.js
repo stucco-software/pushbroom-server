@@ -31,7 +31,7 @@ export async function GET({ url }) {
   // create uuid for view
   const view_id = `urn:uuid:${crypto.randomUUID()}`
   // convert get url to triples
-  let triples = await_handler(view_id, url)
+  let triples = await _handler(view_id, url)
   // insert triples to store
   await insert(triples)
   // return view_id in response
