@@ -1,4 +1,6 @@
 {
+  "@base": "https://pushbroom.co/vocabulary/customEvents",
+  "@vocab": "#",
   "Session": "https://pushbroom.co/vocabulary#Session",
   "View": "https://pushbroom.co/vocabulary#View",
   "Event": "https://pushbroom.co/vocabulary#Event",
