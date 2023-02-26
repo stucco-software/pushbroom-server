@@ -126,7 +126,7 @@ describe('Session GET request function', () => {
 
     expect(headers.get('access-control-allow-origin')).toBe(subgraph)
     expect(headers.get('etag')).toBe(id)
-    expect(typeof headers.get('cache-control')).toBe('string')
+    expect(headers.get('cache-control').includes('max-age=')).toBe(true)
   })
 
   it('returns the same id passed in the if-none-match header', async () => {
