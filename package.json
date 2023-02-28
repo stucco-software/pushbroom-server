@@ -4,14 +4,17 @@
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",
+		"prebuild": "npm run min",
 		"build": "vite build",
 		"preview": "vite preview",
-		"test:unit": "vitest"
+		"test:unit": "vitest",
+		"min": "terser static/ping.js --compress --comments /^!/ --mangle --ie8 --safari10 --ecma 5 --toplevel --warn --output static/ping.min.js"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^2.0.0",
 		"@sveltejs/kit": "^1.5.0",
 		"svelte": "^3.54.0",
+		"terser": "^5.16.5",
 		"vite": "^4.0.0",
 		"vitest": "^0.25.3"
 	},
