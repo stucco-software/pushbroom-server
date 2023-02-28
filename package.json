@@ -8,6 +8,7 @@
 		"build": "vite build",
 		"preview": "vite preview",
 		"test:unit": "vitest",
+		"test": "vitest run",
 		"min": "terser static/ping.js --compress --comments /^!/ --mangle --ie8 --safari10 --ecma 5 --toplevel --warn --output static/ping.min.js"
 	},
 	"devDependencies": {
