@@ -1,35 +1,8 @@
 import context from '$lib/context'
 import jsonld from "jsonld"
 import { insert } from "$lib/query"
+import { _unpack } from "$lib/unpack"
 import { subgraph } from '$env/static/private'
-
-export const _unpack = ({event, obj}) => {
-  let keys = [...Object.keys(obj)]
-  let newEvent = Object.assign(event, {})
-  keys.forEach(key => {
-    if (key === 'pushbroom') {
-      // can be abstracted with below but brain not right now
-      try {
-        let json = JSON.parse(obj[key])
-        newEvent[`event`] = json
-        _unpack({event: json, obj: json})
-      } catch {
-        newEvent[`event`] = obj[key]
-      }
-    } else {
-      let shortKey = key.replace('pushbroom', '').toLowerCase()
-      // can be abstracted with above but brain not right now
-      try {
-        let json = JSON.parse(obj[key])
-        newEvent[shortKey] = json
-        _unpack({event: json, obj: json})
-      } catch {
-        newEvent[shortKey] = obj[key]
-      }
-    }
-  })
-  return newEvent
-}
 
 export const _handler = async (event_id, data) => {
   const date = new Date()
@@ -55,9 +28,7 @@ export const _handler = async (event_id, data) => {
 
 export async function POST({ request }) {
   // get the ppost body
-  console.log(request)
   const data = await request.json()
-  console.log(data)
   // create uuid for event
   const event_id = `urn:uuid:${crypto.randomUUID()}`
   // convert get url to triples
