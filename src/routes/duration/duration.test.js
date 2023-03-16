@@ -36,7 +36,8 @@ describe('Event POST response', () => {
 
     vi.doMock('../../lib/query.js', async (importOriginal) => {
       return {
-        insert: () => true
+        insert: () => true,
+        queryBoolean: () => true,
       }
     })
 
@@ -49,13 +50,17 @@ describe('Event POST response', () => {
       }
     }
 
+    let url = {
+      origin: "http://pushbroom.test"
+    }
+
     const { POST } = await import('./+server.js')
 
-    let response = await POST({request})
+    let response = await POST({request, url})
     let code = await response.text()
 
     vi.doUnmock('../../lib/query.js')
     expect(code).toBe('200')
-    expect(response.headers.get('access-control-allow-origin')).toBe(subgraph);
+    expect(response.headers.get('access-control-allow-origin')).toBe(url.origin);
   })
 })

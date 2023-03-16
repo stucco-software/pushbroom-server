@@ -2,7 +2,7 @@ import context from '$lib/context'
 import jsonld from "jsonld"
 import { insert } from "$lib/query"
 import { _unpack } from "$lib/unpack"
-import { subgraph } from '$env/static/private'
+import checkDomain from '$lib/checkDomain'
 
 export const _handler = async (event_id, data) => {
   const date = new Date()
@@ -26,7 +26,8 @@ export const _handler = async (event_id, data) => {
   return await jsonld.toRDF(event, {format: 'application/n-quads'});
 }
 
-export async function POST({ request }) {
+export async function POST({ request, url }) {
+  await checkDomain(url.origin)
   // get the ppost body
   const data = await request.json()
   // create uuid for event
@@ -37,7 +38,7 @@ export async function POST({ request }) {
   await insert(triples)
   // return 200 in response
   let response = new Response(200)
-  response.headers.append('Access-Control-Allow-Origin', subgraph)
+  response.headers.append('Access-Control-Allow-Origin', url.origin)
 
   return response
 }

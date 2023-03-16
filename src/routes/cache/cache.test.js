@@ -6,6 +6,7 @@ const id = `urn:uuid:${uuid}`
 const date = new Date(2023, 1, 24, 13)
 const datetime = date.toISOString()
 const timestamp = date.getTime()
+let domain = 'http://pushbroom.test'
 
 describe('Record sessions', () => {
   beforeEach(() => {
@@ -29,7 +30,7 @@ describe('Record sessions', () => {
     })
     const { _handler } = await import('./+server.js')
 
-    let triples = await _handler(id, request)
+    let triples = await _handler(id, request, domain)
     let target = `<urn:uuid:session> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://pushbroom.co/vocabulary#Session> .
 <urn:uuid:session> <https://pushbroom.co/vocabulary#browser> "Firefox" .
 <urn:uuid:session> <https://pushbroom.co/vocabulary#browserVersion> "111.0.0" .
@@ -59,7 +60,7 @@ describe('Record sessions', () => {
     })
 
     const { _handler } = await import('./+server.js')
-    let triples = await _handler(id, request)
+    let triples = await _handler(id, request, domain)
     let target = `<urn:uuid:session> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://pushbroom.co/vocabulary#Session> .
 <urn:uuid:session> <https://pushbroom.co/vocabulary#browser> "Firefox" .
 <urn:uuid:session> <https://pushbroom.co/vocabulary#browserVersion> "111.0.0" .
@@ -87,7 +88,7 @@ describe('Record sessions', () => {
         'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/111.0'
       })
     })
-    let triples = await _handler(id, request)
+    let triples = await _handler(id, request, domain)
     let target
     vi.doUnmock('../../lib/query.js')
     expect(triples).toBe(target);
@@ -113,18 +114,22 @@ describe('Session GET request function', () => {
       }
     })
 
-    let request = new Request(`https://pushbroom.dev/cache`, {
+    let request = new Request(`https://pushbroom.test/cache`, {
       method: 'GET',
       headers: new Headers({
         'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/111.0'
       })
     })
+    let url = {
+      origin: "http://pushbroom.test"
+    }
+
     const { GET } = await import('./+server.js')
-    let response = await GET({request})
+    let response = await GET({request, url})
     let headers = response.headers
     vi.doUnmock('../../lib/query.js')
 
-    expect(headers.get('access-control-allow-origin')).toBe(subgraph)
+    expect(headers.get('access-control-allow-origin')).toBe(url.origin)
     expect(headers.get('etag')).toBe(id)
     expect(headers.get('cache-control').includes('max-age=')).toBe(true)
   })
@@ -145,8 +150,11 @@ describe('Session GET request function', () => {
         'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/111.0'
       })
     })
+    let url = {
+      origin: "http://pushbroom.test"
+    }
     const { GET } = await import('./+server.js')
-    let response = await GET({request})
+    let response = await GET({request, url})
     let headers = response.headers
     vi.doUnmock('../../lib/query.js')
 
@@ -169,8 +177,11 @@ describe('Session GET request function', () => {
         'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/111.0'
       })
     })
+    let url = {
+      origin: "http://pushbroom.test"
+    }
     const { GET } = await import('./+server.js')
-    let response = await GET({request})
+    let response = await GET({request, url})
     let headers = response.headers
     vi.doUnmock('../../lib/query.js')
 
