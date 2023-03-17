@@ -173,4 +173,4 @@
   }
   pageview()
   pushbroom.initEvents()
-})(window, document, 'https://ping.pushbroom.co')
+})(window, document, 'ping.pushbroom.co')
