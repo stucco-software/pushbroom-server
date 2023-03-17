@@ -2,8 +2,6 @@
 ;(async function (w, document, host) {
   const loc = w.location
   let prev
-  host = host[0] === '{' ? 'analytics.' + loc.hostname : host
-  // host = host[0] === '{' ? 'localhost:5174' : host
   const nav = w.navigator
 
   // Kill requests from bots and spiders
@@ -175,4 +173,4 @@
   }
   pageview()
   pushbroom.initEvents()
-})(window, document, '{{.Host}}')
+})(window, document, 'https://ping.pushbroom.co')
