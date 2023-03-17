@@ -56,7 +56,7 @@ export async function GET({ request, url }) {
   let session = request.headers.get('if-none-match')
   let triples = await _handler(id, request, url.origin)
   if (triples) {
-    await insert(triples)
+    await insert({domain: url.origin, triples})
     session = id
   }
   // Attach the new eTag to the response

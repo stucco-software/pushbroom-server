@@ -1,4 +1,4 @@
-import { sparql_endpoint, subgraph, sparql_user, sparql_password } from '$env/static/private'
+import { sparql_endpoint, sparql_user, sparql_password } from '$env/static/private'
 import jsonld from 'jsonld'
 import context from '$lib/context'
 import prefixes from '$lib/prefixes'
@@ -42,7 +42,7 @@ export const queryBoolean = async query => {
   return json.boolean
 }
 
-export const insert = async nquads => await fetch(`${sparql_endpoint}/update`, {
+export const insert = async ({domain, triples}) => await fetch(`${sparql_endpoint}/update`, {
     method: 'POST',
     headers: {
       'Authorization': 'Basic ' + btoa(sparql_user + ":" + sparql_password),
@@ -50,8 +50,8 @@ export const insert = async nquads => await fetch(`${sparql_endpoint}/update`, {
     },
     body: new URLSearchParams({
       'update': `insert data {
-        graph <${subgraph}> {
-${nquads}
+        graph <${domain}> {
+${triples}
         }
       }`
     })

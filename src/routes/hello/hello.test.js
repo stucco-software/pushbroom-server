@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { _handler, GET } from './+server.js'
-import { subgraph } from '$env/static/private'
 
 const uuid = 'view'
 const id = `urn:uuid:${uuid}`

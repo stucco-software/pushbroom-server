@@ -34,7 +34,7 @@ export async function GET({ url }) {
   // convert get url to triples
   let triples = await _handler(view_id, url)
   // insert triples to store
-  await insert(triples)
+  await insert({domain: url.origin, triples})
   // return view_id in response
   let response = new Response(view_id)
   // allow CORS from domain origin

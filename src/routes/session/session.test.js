@@ -1,5 +1,4 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { subgraph } from '$env/static/private'
 
 const uuid = 'session'
 const id = `urn:uuid:${uuid}`

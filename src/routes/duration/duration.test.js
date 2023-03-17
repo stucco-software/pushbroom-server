@@ -1,5 +1,4 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { subgraph } from '$env/static/private'
 
 const date = new Date(2023, 1, 24, 14)
 const datetime = date.toISOString()
