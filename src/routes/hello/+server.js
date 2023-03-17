@@ -27,7 +27,7 @@ export async function _handler(view_id, url) {
   return await jsonld.toRDF(data, {format: 'application/n-quads'})
 }
 
-export async function GET({ url }) {
+export async function GET({ request,url }) {
   let domain = request.headers.get('origin')
   await checkDomain(domain)
   // create uuid for view
