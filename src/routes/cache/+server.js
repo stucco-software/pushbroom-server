@@ -50,7 +50,7 @@ export const _handler = async (id, request, domain) => {
 }
 
 export async function GET({ request, url }) {
-  await checkDomain(url.origin)
+  await checkDomain(request.url.origin)
 
   let id = `urn:uuid:${crypto.randomUUID()}`
   let session = request.headers.get('if-none-match')
