@@ -80,6 +80,12 @@ describe('Event POST response', () => {
       }
     })
 
+    vi.mock('../../lib/checkDomain.js', async () => {
+      return {
+        default: () => true
+      }
+    })
+
     let request = {
       json: () => {
         return {

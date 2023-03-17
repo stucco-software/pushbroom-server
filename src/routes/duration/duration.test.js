@@ -40,6 +40,11 @@ describe('Event POST response', () => {
         queryBoolean: () => true,
       }
     })
+    vi.mock('../../lib/checkDomain.js', async () => {
+      return {
+        default: () => true
+      }
+    })
 
     let request = {
       json: () => {

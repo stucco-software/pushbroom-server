@@ -15,7 +15,7 @@ const url =  new URL(`https://pushbroom.test/hello?r=${data.r}&p=${data.p}&w=${d
 describe('View request object to RDF Triples handler', () => {
   beforeEach(() => {
     vi.useFakeTimers()
-    vi.mock('../../lib/query.js', async () => {
+    vi.doMock('../../lib/query.js', async () => {
       return {
         insert: () => true,
         queryBoolean: () => true,
@@ -25,6 +25,7 @@ describe('View request object to RDF Triples handler', () => {
 
   afterEach(() => {
     vi.useRealTimers()
+    vi.doUnmock('../../lib/query.js')
   })
 
   it('converts a url query parameter of a view into triples', async () => {
@@ -53,6 +54,12 @@ describe('View GET request function', () => {
   })
 
   it('accepts a URL and returns a view UUID', async () => {
+    vi.mock('../../lib/checkDomain.js', async () => {
+      return {
+        default: () => true
+      }
+    })
+
     let response = await GET({url})
     let body = await response.text()
     expect(body).toBe(id)

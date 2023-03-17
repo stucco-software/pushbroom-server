@@ -49,6 +49,12 @@ describe('Event POST response', () => {
       }
     })
 
+    vi.mock('../../lib/checkDomain.js', async () => {
+      return {
+        default: () => true
+      }
+    })
+
     let request = {
       json: () => {
         return {
@@ -70,6 +76,8 @@ describe('Event POST response', () => {
     let code = await response.text()
 
     vi.doUnmock('../../lib/query.js')
+    vi.doUnmock('../../lib/checkDomain.js')
+
     expect(code).toBe('200')
     expect(response.headers.get('access-control-allow-origin')).toBe(url.origin);
   })

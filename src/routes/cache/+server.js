@@ -24,7 +24,7 @@ export const _checkSessionID = async (id, domain) => {
   if (!id) {
     return true
   }
-   await queryBoolean(`
+  return await queryBoolean(`
     ASK {
       GRAPH <${domain}> {
         <${id}> pushbroom:timestamp ?t
