@@ -56,9 +56,9 @@ export async function GET({ request, url }) {
 
   let id = `urn:uuid:${crypto.randomUUID()}`
   let session = request.headers.get('if-none-match')
-  let triples = await _handler(id, request, url.origin)
+  let triples = await _handler(id, request, domain)
   if (triples) {
-    await insert({domain: url.origin, triples})
+    await insert({domain, triples})
     session = id
   }
   // Attach the new eTag to the response
@@ -69,7 +69,7 @@ export async function GET({ request, url }) {
       "ETag": session
     }
   })
-  response.headers.append('Access-Control-Allow-Origin', url.origin)
+  response.headers.append('Access-Control-Allow-Origin', domain)
 
   return response
 }

@@ -26,10 +26,10 @@ export async function POST({ request, url }) {
   let triples = await _handler(data)
   // insert triples to store
 
-  await insert({domain: url.origin, triples})
+  await insert({domain, triples})
   // return 200 in response
   let response = new Response(200)
-  response.headers.append('Access-Control-Allow-Origin', url.origin)
+  response.headers.append('Access-Control-Allow-Origin', domain)
 
   return response
 }
