@@ -28,7 +28,8 @@ export async function _handler(view_id, url) {
 }
 
 export async function GET({ url }) {
-  await checkDomain(request.url.origin)
+  let domain = request.headers.get('origin')
+  await checkDomain(domain)
   // create uuid for view
   const view_id = `urn:uuid:${crypto.randomUUID()}`
   // convert get url to triples

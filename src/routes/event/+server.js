@@ -27,7 +27,9 @@ export const _handler = async (event_id, data) => {
 }
 
 export async function POST({ request, url }) {
-  await checkDomain(request.url.origin)
+  let domain = request.headers.get('origin')
+  await checkDomain(domain)
+
   // get the ppost body
   const data = await request.json()
   // create uuid for event

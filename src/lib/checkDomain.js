@@ -3,6 +3,7 @@ import { queryBoolean } from "$lib/query"
 
 const checkDomain = async (domain) => {
   console.log('check domain')
+  console.log(domain)
   if (!domain) {
     throw error(409, {
       message: 'Domain unindentified'
