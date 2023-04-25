@@ -1,43 +1,20 @@
-/*! pushbroom.c0 0.0.1 */
-;(async function (w, document, host) {
-  const loc = w.location
-  let prev
-  const nav = w.navigator
-
-  // Kill requests from bots and spiders
-  if (nav.userAgent.search(/(bot|spider|crawl|preview)/gi) > -1) {
+!async function(w, document, host) {
+  if (w.navigator.userAgent.search(/(bot|spider|crawl|preview)/gi) > -1) {
     return
   }
 
-  const disable = 'disablePushbroom',
-    ael = 'addEventListener',
-    rel = 'removeEventListener',
-    cache = '/cache?',
-    ps = 'pushState',
-    sb = 'sendBeacon',
-    ls = 'localStorage',
-    ci = 'Pushbroom is',
-    blocked = ['unblocked', 'blocked'],
-    dce = 'pushbroom',
-    log = console.log
-    c = 'click'
+  let session
+  let event
+  let blocked = w.localStorage.getItem('pushbroom:blocked')
 
-  const block = viaPage => {
-    let b = parseFloat(w[ls].getItem(blocked[1]))
-    b &&
-      viaPage &&
-      log(
-        ci +
-          ' blocked on ' +
-          loc.hostname +
-          ' - Use pushbroom.blockMe(0) to unblock'
-      )
-    return b
-  }
+  const params = data =>
+    Object.keys(data)
+      .map(key => `${key}=${encodeURIComponent(data[key])}`)
+      .join('&')
 
-  const send = (url, viaPage) => {
-    if (block(viaPage)) {
-      return new Promise(resolve => resolve())
+  const get = (url) => {
+    if (blocked) {
+      return new Promise((resolve, reject) => {})
     }
     const xhr = new XMLHttpRequest()
     return new Promise((resolve, reject) => {
@@ -51,126 +28,54 @@
     })
   }
 
-  // const perf = w.performance
-  const screen = w.screen
-
-  const url = 'https://' + host
-  // const url = 'http://' + host
-  const now = () => Date.now()
-  const add = () => (duration += now() - snapshot)
-
-  const params = data =>
-    Object.keys(data)
-      .map(key => `${key}=${encodeURIComponent(data[key])}`)
-      .join('&')
-
-  const beacon = (url, data) => {
-    if (block()) {
-      return
-    }
-    if (nav[sb]) {
-      nav[sb](url, JSON.stringify(data))
-    } else {
-      return send(`${url}?${params(data)}`)
-    }
+  const send = (type, data) => {
+    let url = `${host}/event?type=${type}&${params(data)}&session=${session}&previous=${event}`
+    return get(url)
   }
 
-  let start, snapshot, duration, data
+  const cache = () => {
+    let url = `${host}/cache`
+    return get(url)
+  }
+
+  const getData = (e) => e.getAttributeNames().filter(ns => ns.startsWith('pb:') || ns === 'url').reduce((o, key) => ({ ...o, [key]: e.getAttribute(key)}), {})
 
   const pageview = async () => {
-    if (w[disable]) {
-      delete w[disable]
-      return
-    }
-    delete w[disable]
-
-    start = now()
-    snapshot = start
-    duration = 0
-
-    // set data package
-    data = {
-      r: document.referrer,
-      w: screen.width,
-      p: loc.href,
-    }
-
-    data.r ? data.r = data.r : data.r = prev
-    let h = loc.hostname
-    let p = loc.pathname
-
-    await Promise.all([
-      send(url + cache + h).then(u => {
-        data.u = u
-      })
-    ])
-    prev = data.p
-    send(url + '/hello?' + params(data), true).then(r => {
-      w.vid = r
-    })
+    event = await send('Pageview', getData(document.querySelector('pushbroom')))
   }
 
-  document[ael]('visibilitychange', () => {
-    document.hidden ? add() : (snapshot = now())
-  })
-
-  const sendDuration = async () => {
-    if (w[disable]) {
-      return
-    }
-    !document.hidden ? add() : null
-    await beacon(url + '/duration', { d: duration, v: vid })
-  }
-  // log the pageview duration
-  w[ael]('beforeunload', sendDuration)
-
-  let _pushState = function (type) {
-    let original = history[type]
-    return function () {
-      let r = original.apply(this, arguments),
-        e
-      if (typeof Event == 'function') {
-        e = new Event(type)
-      } else {
-        e = doc.createEvent('Event')
-        e.initEvent(type, true, true)
-      }
-      e.arguments = arguments
-      w.dispatchEvent(e)
-      return r
+  let callback = (e, o) => {
+    if (e[0].isIntersecting) {
+      send(e[0].target.dataset.pushbroom, getData(e[0].target))
     }
   }
 
-  w.history[ps] = _pushState(ps)
-  w[ael](ps, () => {
-    sendDuration()
-    pageview()
-  })
+  let mobserver = new MutationObserver(pageview)
+  let iobserver = new IntersectionObserver(callback)
+  document.querySelectorAll('[data-pushbroom]').forEach(n => iobserver.observe(n))
+  document.querySelectorAll('pushbroom').forEach(n => mobserver.observe(n, {attributes: true}))
 
-  let listener = e => e.target.dataset[dce] && pushbroom.event(Object.assign({}, e.target.dataset))
+  let clicker = e => {
+    if (!e.target.dataset['pushbroom:click']) return
+    send(e.target.dataset['pushbroom:click'], getData(e.target))
+  }
 
-  // add global object for capturing events
   w.pushbroom = {
-    async event(value, callback) {
-      add()
-      const data = {
-        e: value,
-        v: vid,
-        s: c,
-        d: duration
+    block(v) {
+      if (!blocked) {
+        blocked = true
+        w.localStorage.setItem('pushbroom:blocked', true)
+      } else {
+        blocked = null
+        w.localStorage.removeItem('pushbroom:blocked')
       }
-      await beacon(url + '/event', data)
-      callback && callback()
-    },
-    initEvents() {
-      w.addEventListener(c, listener)
-    },
-    blockMe(v) {
-      v = v ? 1 : 0
-      w[ls].setItem(blocked[1], v)
-      log(ci + ' now ' + blocked[v] + ' on ' + loc.hostname)
-    },
+    }
   }
-  pageview()
-  pushbroom.initEvents()
-})(window, document, 'ping.pushbroom.co')
+
+  w.addEventListener('click', clicker)
+
+  session = await cache()
+  await pageview()
+
+}(window, document, 'https://ping.pushbroom.co');
+
