@@ -3,9 +3,10 @@
     return
   }
 
-  let session
-  let event
-  let blocked = w.localStorage.getItem('pushbroom:blocked')
+  let pushbroom = 'pushbroom',
+      blocked = w.localStorage.getItem('pushbroom:blocked'),
+      event,
+      session
 
   const params = data =>
     Object.keys(data)
@@ -48,20 +49,20 @@
   let callback = (e, o) => {
     e
       .filter(n => n.isIntersecting)
-      .forEach(n => send(n.target.dataset.pushbroom, getData(n.target)))
+      .forEach(n => send(n.target.dataset[pushbroom], getData(n.target)))
   }
 
   let iobserver = new IntersectionObserver(callback)
 
   const domchange = (arr, o) => {
     arr
-      .filter(e => e.target.getAttribute('data-pushbroom'))
+      .filter(e => e.target.getAttribute(`data-${pushbroom}`))
       .forEach(n => {
         iobserver.observe(n.target)
       })
 
     document
-      .querySelectorAll('pushbroom')
+      .querySelectorAll(pushbroom)
       .forEach(n => {
         pageview(n)
       })
@@ -71,18 +72,18 @@
   entireDomObserver.observe(document.body, {subtree: true, childList: true})
 
   let clicker = e => {
-    if (!e.target.dataset['pushbroom:click']) return
-    send(e.target.dataset['pushbroom:click'], getData(e.target))
+    if (!e.target.dataset[`${pushbroom}:click`]) return
+    send(e.target.dataset[`${pushbroom}:click`], getData(e.target))
   }
 
-  w.pushbroom = {
+  w[pushbroom] = {
     block(v) {
       if (!blocked) {
         blocked = true
-        w.localStorage.setItem('pushbroom:blocked', true)
+        w.localStorage.setItem(`${pushbroom}:blocked`, true)
       } else {
         blocked = null
-        w.localStorage.removeItem('pushbroom:blocked')
+        w.localStorage.removeItem(`${pushbroom}:blocked`)
       }
     }
   }
