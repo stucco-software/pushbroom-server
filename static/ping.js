@@ -8,6 +8,7 @@
       t = 'target',
       ds = 'dataset',
       fe = 'forEach',
+      f = 'filter',
       blocked = w[ls].getItem(`${pushbroom}:blocked`),
       event,
       session
@@ -43,7 +44,7 @@
     return get(url)
   }
 
-  const getData = (e) => e.getAttributeNames().filter(ns => ns.startsWith('pb:') || ns === 'url').reduce((o, key) => ({ ...o, [key]: e.getAttribute(key)}), {})
+  const getData = (e) => e.getAttributeNames()[f](ns => ns.startsWith('pb:') || ns === 'url').reduce((o, key) => ({ ...o, [key]: e.getAttribute(key)}), {})
 
   const pageview = async (n) => {
     if (n) { event = await send('View', getData(n)) }
@@ -51,7 +52,7 @@
 
   let callback = (e, o) => {
     e
-      .filter(n => n.isIntersecting)
+      [f](n => n.isIntersecting)
       [fe](n => send(n[t][ds][pushbroom], getData(n[t])))
   }
 
@@ -59,7 +60,7 @@
 
   const domchange = (arr, o) => {
     arr
-      .filter(e => e[t].getAttribute(`data-${pushbroom}`))
+      [f](e => e[t].getAttribute(`data-${pushbroom}`))
       [fe](n => {
         iobserver.observe(n[t])
       })
