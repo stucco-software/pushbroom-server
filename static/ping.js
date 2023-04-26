@@ -5,6 +5,7 @@
 
   let pushbroom = 'pushbroom',
       ls = 'localStorage',
+      t = 'target',
       blocked = w[ls].getItem(`${pushbroom}:blocked`),
       event,
       session
@@ -50,16 +51,16 @@
   let callback = (e, o) => {
     e
       .filter(n => n.isIntersecting)
-      .forEach(n => send(n.target.dataset[pushbroom], getData(n.target)))
+      .forEach(n => send(n[t].dataset[pushbroom], getData(n[t])))
   }
 
   let iobserver = new IntersectionObserver(callback)
 
   const domchange = (arr, o) => {
     arr
-      .filter(e => e.target.getAttribute(`data-${pushbroom}`))
+      .filter(e => e[t].getAttribute(`data-${pushbroom}`))
       .forEach(n => {
-        iobserver.observe(n.target)
+        iobserver.observe(n[t])
       })
 
     document
@@ -73,8 +74,8 @@
   entireDomObserver.observe(document.body, {subtree: true, childList: true})
 
   let clicker = e => {
-    if (!e.target.dataset[`${pushbroom}:click`]) return
-    send(e.target.dataset[`${pushbroom}:click`], getData(e.target))
+    if (!e[t].dataset[`${pushbroom}:click`]) return
+    send(e[t].dataset[`${pushbroom}:click`], getData(e[t]))
   }
 
   w[pushbroom] = {
