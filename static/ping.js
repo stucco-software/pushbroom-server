@@ -7,6 +7,7 @@
       ls = 'localStorage',
       t = 'target',
       ds = 'dataset',
+      fe = 'forEach',
       blocked = w[ls].getItem(`${pushbroom}:blocked`),
       event,
       session
@@ -51,7 +52,7 @@
   let callback = (e, o) => {
     e
       .filter(n => n.isIntersecting)
-      .forEach(n => send(n[t][ds][pushbroom], getData(n[t])))
+      [fe](n => send(n[t][ds][pushbroom], getData(n[t])))
   }
 
   let iobserver = new IntersectionObserver(callback)
@@ -59,13 +60,13 @@
   const domchange = (arr, o) => {
     arr
       .filter(e => e[t].getAttribute(`data-${pushbroom}`))
-      .forEach(n => {
+      [fe](n => {
         iobserver.observe(n[t])
       })
 
     document
       .querySelectorAll(pushbroom)
-      .forEach(n => {
+      [fe](n => {
         pageview(n)
       })
   }
