@@ -20,10 +20,10 @@
 
   const get = (url) => {
     if (blocked) {
-      return new Promise((resolve, reject) => {})
+      return new Promise(() => {})
     }
     const xhr = new XMLHttpRequest()
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       xhr.onreadystatechange = () => {
         if (xhr.readyState === 4) {
           resolve(xhr.response)
