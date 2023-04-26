@@ -33,7 +33,7 @@
   }
 
   const send = (type, data) => {
-    let url = `${host}/ping?type=${type}&${params(data)}&session=${session}&previous=${event}`
+    let url = `${host}/ping?t=${type}&${params(data)}&s=${session}&p=${event}`
     return get(url)
   }
 
