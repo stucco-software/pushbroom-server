@@ -84,7 +84,7 @@
     block(v) {
       if (!blocked) {
         blocked = true
-        w[ls].setItem(`${pushbroom}:blocked`, true)
+        w[ls].setItem(`${pushbroom}:blocked`, blocked)
       } else {
         blocked = null
         w[ls].removeItem(`${pushbroom}:blocked`)
