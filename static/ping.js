@@ -4,7 +4,8 @@
   }
 
   let pushbroom = 'pushbroom',
-      blocked = w.localStorage.getItem(`${pushbroom}:blocked`),
+      ls = 'localStorage',
+      blocked = w[ls].getItem(`${pushbroom}:blocked`),
       event,
       session
 
@@ -80,10 +81,10 @@
     block(v) {
       if (!blocked) {
         blocked = true
-        w.localStorage.setItem(`${pushbroom}:blocked`, true)
+        w[ls].setItem(`${pushbroom}:blocked`, true)
       } else {
         blocked = null
-        w.localStorage.removeItem(`${pushbroom}:blocked`)
+        w[ls].removeItem(`${pushbroom}:blocked`)
       }
     }
   }
