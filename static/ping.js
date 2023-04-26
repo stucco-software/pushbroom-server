@@ -4,7 +4,7 @@
   }
 
   let pushbroom = 'pushbroom',
-      blocked = w.localStorage.getItem('pushbroom:blocked'),
+      blocked = w.localStorage.getItem(`${pushbroom}:blocked`),
       event,
       session
 
