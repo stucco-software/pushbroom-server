@@ -29,7 +29,7 @@
   }
 
   const send = (type, data) => {
-    let url = `${host}/event?type=${type}&${params(data)}&session=${session}&previous=${event}`
+    let url = `${host}/ping?type=${type}&${params(data)}&session=${session}&previous=${event}`
     return get(url)
   }
 
@@ -40,20 +40,35 @@
 
   const getData = (e) => e.getAttributeNames().filter(ns => ns.startsWith('pb:') || ns === 'url').reduce((o, key) => ({ ...o, [key]: e.getAttribute(key)}), {})
 
-  const pageview = async () => {
-    event = await send('Pageview', getData(document.querySelector('pushbroom')))
+  const pageview = async (n) => {
+    if (n) { event = await send('View', getData(n)) }
+
   }
 
   let callback = (e, o) => {
-    if (e[0].isIntersecting) {
-      send(e[0].target.dataset.pushbroom, getData(e[0].target))
-    }
+    e
+      .filter(n => n.isIntersecting)
+      .forEach(n => send(n.target.dataset.pushbroom, getData(n.target)))
   }
 
-  let mobserver = new MutationObserver(pageview)
   let iobserver = new IntersectionObserver(callback)
-  document.querySelectorAll('[data-pushbroom]').forEach(n => iobserver.observe(n))
-  document.querySelectorAll('pushbroom').forEach(n => mobserver.observe(n, {attributes: true}))
+
+  const domchange = (arr, o) => {
+    arr
+      .filter(e => e.target.getAttribute('data-pushbroom'))
+      .forEach(n => {
+        iobserver.observe(n.target)
+      })
+
+    document
+      .querySelectorAll('pushbroom')
+      .forEach(n => {
+        pageview(n)
+      })
+  }
+
+  let entireDomObserver = new MutationObserver(domchange)
+  entireDomObserver.observe(document.body, {subtree: true, childList: true})
 
   let clicker = e => {
     if (!e.target.dataset['pushbroom:click']) return
@@ -77,5 +92,4 @@
   session = await cache()
   await pageview()
 
-}(window, document, 'https://ping.pushbroom.co');
-
+}(window, document, 'http://localhost:5173');
