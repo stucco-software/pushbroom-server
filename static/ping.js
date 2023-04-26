@@ -58,7 +58,7 @@
 
   let iobserver = new IntersectionObserver(callback)
 
-  const domchange = (arr, o) => {
+  const domchange = (arr) => {
     arr
       [f](e => e[t].getAttribute(`data-${pushbroom}`))
       [fe](n => {
