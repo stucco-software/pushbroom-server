@@ -97,4 +97,4 @@
   session = await cache()
   await pageview()
 
-}(window, document, 'ping.pushbroom.co');
+}(window, document, 'https://ping.pushbroom.co');
