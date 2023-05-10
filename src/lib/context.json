@@ -5,12 +5,15 @@
   "View": "https://pushbroom.co/vocabulary#View",
   "Event": "https://pushbroom.co/vocabulary#Event",
   "event": "https://pushbroom.co/vocabulary/customEvents#",
+  "pb": "https://pushbroom.co/vocabulary/customData#",
   "id": "@id",
   "type": "@type",
+  "t": "@type",
   "browser": "https://pushbroom.co/vocabulary#browser",
   "browserVersion": "https://pushbroom.co/vocabulary#browserVersion",
   "os": "https://pushbroom.co/vocabulary#operatingSystem",
   "from": "https://pushbroom.co/vocabulary#from",
+  "p": "https://pushbroom.co/vocabulary#from",
   "referrer": "https://pushbroom.co/vocabulary#referrer",
   "url": "https://pushbroom.co/vocabulary#url",
   "source": {
@@ -41,6 +44,9 @@
     "@type": "http://www.w3.org/2001/XMLSchema#integer"
   },
   "inSession": {
+    "@id": "https://pushbroom.co/vocabulary#inSession"
+  },
+  "s": {
     "@id": "https://pushbroom.co/vocabulary#inSession"
   }
 }

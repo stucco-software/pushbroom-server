@@ -97,4 +97,4 @@
   session = await cache()
   await pageview()
 
-}(window, document, 'http://localhost:5173');
+}(window, document, 'ping.pushbroom.co');
