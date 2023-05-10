@@ -2,7 +2,6 @@ import { error } from '@sveltejs/kit'
 import { queryBoolean } from "$lib/query"
 
 const checkDomain = async (domain) => {
-  console.log(domain)
   if (!domain) {
     throw error(409, {
       message: 'Domain unindentified'
@@ -14,13 +13,6 @@ const checkDomain = async (domain) => {
       <${domain}> rdf:type <pushbroom:Domain>
     }
   `)
-  console.logqueryBoolean(`
-    ASK {
-      <${domain}> rdf:type <pushbroom:Domain>
-    }
-  `)
-
-  console.log(domainValid)
 
   if (!domainValid) {
     throw error(401, {
