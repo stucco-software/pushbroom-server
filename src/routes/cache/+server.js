@@ -1,19 +1,15 @@
-import useragent from "useragent"
 import checkDomain from '$lib/checkDomain'
 import { midnight, approachingMidnight } from '$lib/datetime'
 import { insert, queryBoolean } from "$lib/query"
 import context from '$lib/context'
 import jsonld from "jsonld"
 
-export const _createSession = async ({id, agent}) => {
+export const _createSession = async (id) => {
   const date = new Date()
   const ld = {
     '@context': context,
     'id': id,
     'type': 'Session',
-    browser: agent.family,
-    browserVersion: agent.toVersion(),
-    os: agent.os.toString(),
     datetime: date.toISOString(),
     timestamp: date.getTime()
   }
@@ -41,10 +37,7 @@ export const _handler = async (id, request, domain) => {
   let agent = request.headers.get('user-agent')
   let sessionExpired = await _checkSessionID(session, domain)
   if (sessionExpired) {
-    triples = await _createSession({
-      id,
-      agent: useragent.lookup(request.headers.get('user-agent'))
-    })
+    triples = await _createSession(id)
   }
   return triples
 }

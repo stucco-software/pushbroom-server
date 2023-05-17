@@ -12,10 +12,19 @@
   "browser": "https://pushbroom.co/vocabulary#browser",
   "browserVersion": "https://pushbroom.co/vocabulary#browserVersion",
   "os": "https://pushbroom.co/vocabulary#operatingSystem",
-  "from": "https://pushbroom.co/vocabulary#from",
-  "p": "https://pushbroom.co/vocabulary#from",
+  "from": {
+    "@id": "https://pushbroom.co/vocabulary#from",
+    "@type": "@id"
+  },
+  "p": {
+    "@id": "https://pushbroom.co/vocabulary#from",
+    "@type": "@id"
+  },
   "referrer": "https://pushbroom.co/vocabulary#referrer",
-  "url": "https://pushbroom.co/vocabulary#url",
+  "url": {
+    "@id": "https://pushbroom.co/vocabulary#url",
+    "@type": "@id"
+  },
   "source": {
     "@id": "https://pushbroom.co/vocabulary#source",
     "@type": "@id"
@@ -44,9 +53,11 @@
     "@type": "http://www.w3.org/2001/XMLSchema#integer"
   },
   "inSession": {
-    "@id": "https://pushbroom.co/vocabulary#inSession"
+    "@id": "https://pushbroom.co/vocabulary#inSession",
+    "@type": "@id"
   },
   "s": {
-    "@id": "https://pushbroom.co/vocabulary#inSession"
+    "@id": "https://pushbroom.co/vocabulary#inSession",
+    "@type": "@id"
   }
 }
