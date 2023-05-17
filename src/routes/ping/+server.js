@@ -25,6 +25,10 @@ export async function _handler(id, url, domain) {
     query.delete('p')
   }
 
+  if (query.get('t') !== "View") {
+    data.type = 'Event'
+  }
+
   // mutation bad! But okay for right this second
   for (const [key, value] of query) {
     data[key] = encodeURI(value)
