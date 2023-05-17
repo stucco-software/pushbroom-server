@@ -16,7 +16,7 @@ export async function _handler(id, url) {
 
   // mutation bad! But okay for right this second
   for (const [key, value] of query) {
-    data[key] = value
+    data[key] = encodeURI(value)
   }
 
   return await jsonld.toRDF(data, {format: 'application/n-quads'})
@@ -29,7 +29,6 @@ export async function GET({ request,url }) {
   const id = `urn:uuid:${crypto.randomUUID()}`
   // convert get url to triples
   let triples = await _handler(id, url)
-  console.log(triples)
   // insert triples to store
   await insert({domain, triples})
   // return view_id in response
