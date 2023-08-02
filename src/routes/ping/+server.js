@@ -34,6 +34,8 @@ export async function _handler(id, url, domain) {
     data[key] = encodeURI(value)
   }
 
+  console.log(data)
+
   return await jsonld.toRDF(data, {format: 'application/n-quads'})
 }
 
