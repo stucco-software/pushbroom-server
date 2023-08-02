@@ -14,6 +14,8 @@ const checkDomain = async (domain) => {
     }
   `)
 
+  console.log(`domain is valid:`, domainValid)
+
   if (!domainValid) {
     throw error(401, {
       message: 'Unauthorized domain'

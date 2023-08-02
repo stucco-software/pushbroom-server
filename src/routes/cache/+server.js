@@ -46,9 +46,9 @@ export async function GET({ request, url }) {
 
   let domain = request.headers.get('origin')
 
-  console.log('request inbound from:', domain)
-  console.log('wait what')
-  console.log(request.headers)
+  if (domain) {
+    console.log('request inbound from:', domain)
+  }
 
   await checkDomain(domain)
 
