@@ -10,6 +10,7 @@
   },
   "event": "https://pushbroom.co/vocabulary/customEvents#",
   "id": "@id",
+  "t": "@type",
   "type": "@type",
   "browser": "https://pushbroom.co/vocabulary#browser",
   "browserVersion": "https://pushbroom.co/vocabulary#browserVersion",
@@ -72,7 +73,12 @@
     "@id": "https://pushbroom.co/vocabulary#duration",
     "@type": "http://www.w3.org/2001/XMLSchema#integer"
   },
+  "s": {
+    "@id": "https://pushbroom.co/vocabulary#inSession"
+    "@type": "@id"
+  },
   "inSession": {
     "@id": "https://pushbroom.co/vocabulary#inSession"
+    "@type": "@id"
   }
 }
