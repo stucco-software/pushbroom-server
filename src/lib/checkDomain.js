@@ -10,7 +10,7 @@ const checkDomain = async (domain) => {
 
   let domainValid =  await queryBoolean(`
     ASK {
-      <${domain}> rdf:type <pushbroom:Domain>
+      <${domain}> rdf:type pushbroom:Domain
     }
   `)
 
