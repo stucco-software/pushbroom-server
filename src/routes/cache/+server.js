@@ -45,6 +45,9 @@ export const _handler = async (id, request, domain) => {
 export async function GET({ request, url }) {
 
   let domain = request.headers.get('origin')
+
+  console.log('request inbound from:', domain)
+
   await checkDomain(domain)
 
   let id = `urn:uuid:${crypto.randomUUID()}`
