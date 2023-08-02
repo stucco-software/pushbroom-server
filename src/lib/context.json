@@ -1,29 +1,46 @@
 {
-  "@base": "https://pushbroom.co/vocabulary/customEvents",
-  "@vocab": "#",
   "Session": "https://pushbroom.co/vocabulary#Session",
   "View": "https://pushbroom.co/vocabulary#View",
   "Event": "https://pushbroom.co/vocabulary#Event",
+  "Cookie": "https://pushbroom.co/vocabulary#Cookie",
+  "User": "https://pushbroom.co/vocabulary#User",
+  "Domain": {
+    "@id": "https://pushbroom.co/vocabulary#Domain",
+    "@type": "@id"
+  },
   "event": "https://pushbroom.co/vocabulary/customEvents#",
-  "pb": "https://pushbroom.co/vocabulary/customData#",
   "id": "@id",
   "type": "@type",
-  "t": "@type",
   "browser": "https://pushbroom.co/vocabulary#browser",
   "browserVersion": "https://pushbroom.co/vocabulary#browserVersion",
   "os": "https://pushbroom.co/vocabulary#operatingSystem",
-  "from": {
-    "@id": "https://pushbroom.co/vocabulary#from",
-    "@type": "@id"
-  },
-  "p": {
-    "@id": "https://pushbroom.co/vocabulary#from",
-    "@type": "@id"
-  },
+  "from": "https://pushbroom.co/vocabulary#from",
   "referrer": "https://pushbroom.co/vocabulary#referrer",
-  "url": {
-    "@id": "https://pushbroom.co/vocabulary#url",
+  "url": "https://pushbroom.co/vocabulary#url",
+  "manages": {
+    "@id": "https://pushbroom.co/vocabulary#manages",
     "@type": "@id"
+  },
+  "managedBy": {
+    "@id": "https://pushbroom.co/vocabulary#managedBy",
+    "@type": "@id"
+  },
+  "organizations": "http://xmlns.com/foaf/0.1/partOf",
+  "attachedTo": {
+    "@id": "https://pushbroom.co/vocabulary#attachedTo",
+    "@type": "@id"
+  },
+  "loginTime": {
+    "@id": "https://pushbroom.co/vocabulary#loginTime",
+    "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+  },
+  "created": {
+    "@id": "https://pushbroom.co/vocabulary#created",
+    "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+  },
+  "expires": {
+    "@id": "https://pushbroom.co/vocabulary#expires",
+    "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
   },
   "source": {
     "@id": "https://pushbroom.co/vocabulary#source",
@@ -35,6 +52,9 @@
   "viewed": {
     "@id": "https://pushbroom.co/vocabulary#viewed",
     "@type": "@id"
+  },
+  "viewedPage": {
+    "@id": "https://pushbroom.co/vocabulary#viewedPage"
   },
   "width": {
     "@id": "https://pushbroom.co/vocabulary#width",
@@ -53,11 +73,6 @@
     "@type": "http://www.w3.org/2001/XMLSchema#integer"
   },
   "inSession": {
-    "@id": "https://pushbroom.co/vocabulary#inSession",
-    "@type": "@id"
-  },
-  "s": {
-    "@id": "https://pushbroom.co/vocabulary#inSession",
-    "@type": "@id"
+    "@id": "https://pushbroom.co/vocabulary#inSession"
   }
 }
