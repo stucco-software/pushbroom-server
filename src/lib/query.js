@@ -37,6 +37,8 @@ export const queryArr = async query => {
 }
 
 export const queryBoolean = async query => {
+  console.log(`${prefixes}
+    ${query}`)
   let triples = await getTriples('application/sparql-results+json')(query)
   let json = await triples.json()
   return json.boolean
