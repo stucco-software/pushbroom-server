@@ -95,6 +95,11 @@
   w.addEventListener('click', clicker)
 
   session = await cache()
-  await pageview()
+
+  document
+    .querySelectorAll(pushbroom)
+    [fe](n => {
+      pageview(n)
+    })
 
 }(window, document, 'https://ping.pushbroom.co');
