@@ -34,7 +34,6 @@ export const _handler = async (id, request, domain) => {
   let triples
   // get the id from the eTag header
   let session = request.headers.get('if-none-match')
-  let agent = request.headers.get('user-agent')
   let sessionExpired = await _checkSessionID(session, domain)
   if (sessionExpired) {
     triples = await _createSession(id)
@@ -51,6 +50,10 @@ export async function GET({ request, url }) {
   }
 
   await checkDomain(domain)
+  let agent = request.headers.get('user-agent')
+  console.log(`----------`)
+  console.log(agent)
+  console.log(`----------`)
 
   let id = `urn:uuid:${crypto.randomUUID()}`
   let session = request.headers.get('if-none-match')

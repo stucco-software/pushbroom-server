@@ -41,12 +41,14 @@ export async function _handler(id, url, domain) {
 
 export async function GET({ request,url }) {
   let domain = request.headers.get('origin')
+  console.log(`new reqest from domain`, domain, url)
   await checkDomain(domain)
   console.log(domain)
   // create uuid for view
   const id = `urn:uuid:${crypto.randomUUID()}`
   // convert get url to triples
   let triples = await _handler(id, url, domain)
+
   console.log(triples)
   // insert triples to store
   await insert({domain, triples})
