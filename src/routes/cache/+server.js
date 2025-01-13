@@ -3,15 +3,19 @@ import { midnight, approachingMidnight } from '$lib/datetime'
 import { insert, queryBoolean } from "$lib/query"
 import context from '$lib/context'
 import jsonld from "jsonld"
+import useragent from 'useragent'
 
-export const _createSession = async (id) => {
+export const _createSession = async (id, agent) => {
   const date = new Date()
   const ld = {
     '@context': context,
     'id': id,
     'type': 'Session',
     datetime: date.toISOString(),
-    timestamp: date.getTime()
+    timestamp: date.getTime(),
+    browser: agent.family,
+    browserVersion: agent.toVersion(),
+    os: agent.os.family
   }
   return await jsonld.toRDF(ld, {format: 'application/n-quads'});
 }
@@ -36,7 +40,9 @@ export const _handler = async (id, request, domain) => {
   let session = request.headers.get('if-none-match')
   let sessionExpired = await _checkSessionID(session, domain)
   if (sessionExpired) {
-    triples = await _createSession(id)
+    let agentstring = request.headers.get('user-agent')
+    let agent = useragent.lookup(agentstring)
+    triples = await _createSession(id, agent)
   }
   return triples
 }
@@ -50,10 +56,6 @@ export async function GET({ request, url }) {
   }
 
   await checkDomain(domain)
-  let agent = request.headers.get('user-agent')
-  console.log(`----------`)
-  console.log(agent)
-  console.log(`----------`)
 
   let id = `urn:uuid:${crypto.randomUUID()}`
   let session = request.headers.get('if-none-match')

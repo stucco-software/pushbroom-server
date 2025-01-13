@@ -12,9 +12,16 @@
   "id": "@id",
   "t": "@type",
   "type": "@type",
-  "browser": "https://pushbroom.co/vocabulary#browser",
+  "userAgent": "https://pushbroom.co/vocabulary#userAgent",
+  "browser": {
+    "@id": "https://pushbroom.co/vocabulary#browser",
+    "@type": "@id"
+  },
   "browserVersion": "https://pushbroom.co/vocabulary#browserVersion",
-  "os": "https://pushbroom.co/vocabulary#operatingSystem",
+  "os": {
+    "@id": "https://pushbroom.co/vocabulary#operatingSystem",
+    "@type": "@id"
+  },
   "from": "https://pushbroom.co/vocabulary#from",
   "referrer": "https://pushbroom.co/vocabulary#referrer",
   "url": "https://pushbroom.co/vocabulary#url",
