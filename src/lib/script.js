@@ -1,5 +1,5 @@
 !async function(w, document, host, pkey) {
-  console.log('lets go ping!')
+  console.log('lets go ping!', host, pkey)
   if (w.navigator.userAgent.search(/(bot|spider|crawl|preview)/gi) > -1) {
     return
   }
@@ -36,12 +36,12 @@
   }
 
   const send = (type, data) => {
-    let url = `${host}/ping?t=${type}&${params(data)}&s=${session}&p=${event}`
+    let url = `${host}/ping?t=${type}&${params(data)}&s=${session}&p=${event}&pkey=${pkey}`
     return get(url)
   }
 
   const cache = () => {
-    let url = `${host}/cache`
+    let url = `${host}/cache?pkey=${pkey}`
     return get(url)
   }
 
@@ -103,5 +103,4 @@
       pageview(n)
     })
 
-// }(window, document, 'https://ping.pushbroom.co'. '123');
-}(window, document, 'http://localhost:5174', '123');
+}(window, document, "<SERVER_HOST>", "<PUBLIC_KEY>");

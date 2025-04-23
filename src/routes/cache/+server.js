@@ -48,7 +48,8 @@ export const _handler = async (id, request, domain) => {
 }
 
 export async function GET({ request, url }) {
-
+  console.log('get dat cache')
+  console.log(request.headers)
   let domain = request.headers.get('origin')
 
   if (domain) {
