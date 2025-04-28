@@ -80,6 +80,13 @@
     "@id": "https://pushbroom.co/vocabulary#duration",
     "@type": "http://www.w3.org/2001/XMLSchema#integer"
   },
+  "p": {
+    "@id": "https://pushbroom.co/vocabulary#previous",
+    "@type": "@id"
+  },
+  "n": {
+    "@reverse": "https://pushbroom.co/vocabulary#previous"
+  },
   "s": {
     "@id": "https://pushbroom.co/vocabulary#inSession",
     "@type": "@id"

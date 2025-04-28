@@ -1,4 +1,5 @@
 import { error } from '@sveltejs/kit'
+import normalizeUrl from 'normalize-url'
 import { queryBoolean } from "$lib/query"
 
 const checkDomain = async (domain) => {
@@ -10,11 +11,11 @@ const checkDomain = async (domain) => {
 
   let domainValid =  await queryBoolean(`
     ASK {
-      <${domain}> rdf:type pushbroom:Domain
+      <${normalizeUrl(domain)}> rdf:type <pushbroom:Domain>
     }
   `)
 
-  console.log(`domain is valid:`, domainValid)
+  console.log(`${normalizeUrl(domain)} is valid:`, domainValid)
 
   if (!domainValid) {
     throw error(401, {

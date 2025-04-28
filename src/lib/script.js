@@ -11,8 +11,8 @@
       fe = 'forEach',
       f = 'filter',
       blocked = w[ls].getItem(`${pushbroom}:blocked`),
-      event,
-      session
+      event
+      // session
 
   const params = data =>
     Object.keys(data)
@@ -36,19 +36,26 @@
   }
 
   const send = (type, data) => {
-    let url = `${host}/ping?t=${type}&${params(data)}&s=${session}&p=${event}&pkey=${pkey}`
+    console.log(`send data!`)
+    // let url = `${host}/ping?t=${type}&${params(data)}&s=${session}&p=${event}&pkey=${pkey}`
+    let url = `${host}/ping?t=${type}&${params(data)}&p=${event}&pkey=${pkey}`
     return get(url)
   }
 
-  const cache = () => {
-    let url = `${host}/cache?pkey=${pkey}`
-    return get(url)
-  }
+  // const cache = () => {
+  //   let url = `${host}/cache?pkey=${pkey}`
+  //   return get(url)
+  // }
 
   const getData = (e) => e.getAttributeNames()[f](ns => ns.startsWith('pb:') || ns === 'url').reduce((o, key) => ({ ...o, [key]: e.getAttribute(key)}), {})
 
   const pageview = async (n) => {
-    if (n) { event = await send('View', getData(n)) }
+    console.log(`send pageview!`, n)
+    if (n) {
+      console.log(`this is in-memory, and hard page loads will wipe it out`)
+      event = await send('View', getData(n))
+      console.log(event)
+    }
   }
 
   let callback = (e, o) => {
@@ -60,15 +67,19 @@
   let iobserver = new IntersectionObserver(callback)
 
   const domchange = (arr) => {
+    console.log(`dom change!`, arr)
     arr
       [f](e => e[t].getAttribute(`data-${pushbroom}`))
       [fe](n => {
+        console.log(`ping?`)
         iobserver.observe(n[t])
       })
 
+    console.log(arr[f](e => e[t].getAttribute(`data-${pushbroom}`)))
     document
       .querySelectorAll(pushbroom)
       [fe](n => {
+        console.log(`I see things!`)
         pageview(n)
       })
   }
@@ -95,12 +106,12 @@
 
   w.addEventListener('click', clicker)
 
-  session = await cache()
-
-  document
-    .querySelectorAll(pushbroom)
-    [fe](n => {
-      pageview(n)
-    })
+  // session = await cache()
+  // document
+  //   .querySelectorAll(pushbroom)
+  //   [fe](n => {
+  //     console.log(`initial load…`)
+  //     pageview(n)
+  //   })
 
 }(window, document, "<SERVER_HOST>", "<PUBLIC_KEY>");

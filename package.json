@@ -3,7 +3,7 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"dev": "vite dev",
+		"dev": "vite dev --port 5174",
 		"prebuild": "npm run min",
 		"build": "vite build",
 		"start": "node build/index.js",
@@ -24,6 +24,7 @@
 	"dependencies": {
 		"@sveltejs/adapter-node": "^1.2.2",
 		"jsonld": "^8.1.0",
+		"normalize-url": "^8.0.1",
 		"useragent": "^2.3.0"
 	}
 }

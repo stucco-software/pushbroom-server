@@ -1,3 +1,4 @@
+
 import checkDomain from '$lib/checkDomain'
 import { midnight, approachingMidnight } from '$lib/datetime'
 import { insert, queryBoolean } from "$lib/query"
@@ -21,9 +22,11 @@ export const _createSession = async (id, agent) => {
 }
 
 export const _checkSessionID = async (id, domain) => {
+  console.log(`if no id, return true. Why?`)
   if (!id) {
     return true
   }
+  console.log('as if this session is valid or not…')
   return await queryBoolean(`
     ASK {
       GRAPH <${domain}> {
@@ -37,12 +40,18 @@ export const _checkSessionID = async (id, domain) => {
 export const _handler = async (id, request, domain) => {
   let triples
   // get the id from the eTag header
+  console.log(`get the id from eTag header`)
   let session = request.headers.get('if-none-match')
+  console.log(session)
+  console.log(`now check session id…`)
   let sessionExpired = await _checkSessionID(session, domain)
+  console.log(`session is expired?`, sessionExpired)
   if (sessionExpired) {
+    console.log(`yeah this is expored, please make a new one:`)
     let agentstring = request.headers.get('user-agent')
     let agent = useragent.lookup(agentstring)
     triples = await _createSession(id, agent)
+    console.log(triples)
   }
   return triples
 }
@@ -60,20 +69,23 @@ export async function GET({ request, url }) {
 
   let id = `urn:uuid:${crypto.randomUUID()}`
   let session = request.headers.get('if-none-match')
-  let triples = await _handler(id, request, domain)
-  if (triples) {
-    await insert({domain, triples})
-    session = id
-  }
+  let etag = request.headers.get('ETag')
+  console.log(`some new id…`, id)
+  console.log(`some old id…`, etag, session)
+
+  // let triples = await _handler(id, request, domain)
+  // if (triples) {
+  //   await insert({domain, triples})
+  //   session = id
+  // }
   // Attach the new eTag to the response
   // Expire the header at midnight tonight.
   const response = new Response(id, {
     headers: {
-      "Cache-Control": `max-age=${approachingMidnight()}`,
-      "ETag": session
+      // "Cache-Control": `max-age=${approachingMidnight()}`,
+      "ETag": id
     }
   })
   response.headers.append('Access-Control-Allow-Origin', domain)
-
   return response
 }
